@@ -36,7 +36,7 @@ public class Matrix extends Matrices {
         }
 
         for (int l = 0; l < m.length(); ++l) {
-            for (int w = 0; w < m.length(); ++w) {
+            for (int w = 0; w < m.width(); ++w) {
                 this.set(l, w, this.v(l, w) + m.v(l, w));
             }
         }
@@ -48,7 +48,7 @@ public class Matrix extends Matrices {
             throw new IllegalArgumentException("Matrix length/width mismatch");
         }
         for (int l = 0; l < m.length(); ++l) {
-            for (int w = 0; w < m.length(); ++w) {
+            for (int w = 0; w < m.width(); ++w) {
                 this.set(l, w, this.v(l, w) - m.v(l, w));
             }
         }
@@ -60,7 +60,7 @@ public class Matrix extends Matrices {
             throw new IllegalArgumentException("Matrix length/width mismatch");
         }
         for (int l = 0; l < m.length(); ++l) {
-            for (int w = 0; w < m.length(); ++w) {
+            for (int w = 0; w < m.width(); ++w) {
                 this.set(l, w, this.v(l, w) * m.v(l, w));
             }
         }
@@ -72,7 +72,7 @@ public class Matrix extends Matrices {
             throw new IllegalArgumentException("Matrix length/width mismatch");
         }
         for (int l = 0; l < m.length(); ++l) {
-            for (int w = 0; w < m.length(); ++w) {
+            for (int w = 0; w < m.width(); ++w) {
                 this.set(l, w, this.v(l, w) / m.v(l, w));
             }
         }
@@ -86,7 +86,7 @@ public class Matrix extends Matrices {
 
         double[][] newMatrix = new double[this.length()][this.width()];
         for (int l = 0; l < this.length(); ++l) {
-            for (int w = 0; w < this.length(); ++w) {
+            for (int w = 0; w < this.width(); ++w) {
                 newMatrix[l][w] = this.v(l, w) + m.v(l, w);
             }
         }
@@ -101,7 +101,7 @@ public class Matrix extends Matrices {
 
         double[][] newMatrix = new double[this.length()][this.width()];
         for (int l = 0; l < this.length(); ++l) {
-            for (int w = 0; w < this.length(); ++w) {
+            for (int w = 0; w < this.width(); ++w) {
                 newMatrix[l][w] = this.v(l, w) - m.v(l, w);
             }
         }
@@ -116,7 +116,7 @@ public class Matrix extends Matrices {
 
         double[][] newMatrix = new double[this.length()][this.width()];
         for (int l = 0; l < this.length(); ++l) {
-            for (int w = 0; w < this.length(); ++w) {
+            for (int w = 0; w < this.width(); ++w) {
                 newMatrix[l][w] = this.v(l, w) / m.v(l, w);
             }
         }
@@ -131,8 +131,8 @@ public class Matrix extends Matrices {
 
         double[][] newMatrix = new double[this.length()][this.width()];
         for (int l = 0; l < this.length(); ++l) {
-            for (int w = 0; w < this.length(); ++w) {
-                newMatrix[l][w] = this.v(l, w) * m.v(l, w);
+            for (int w = 0; w < this.width(); ++w) {
+                newMatrix[l][w] = theMatrix[l][w] * m.v(l, w);
             }
         }
         return new Matrix(newMatrix);
@@ -140,14 +140,18 @@ public class Matrix extends Matrices {
 
     @Override
     public Matrix dotProduct(Matrices m) {
-        if (m.length() != this.width() || m.width() != this.length()) {
+        if (m.isColumnVector()) {
+            return colVecDotPro(m);
+        } else if (m.isRowVector()) {
+            return rowVecDotPro(m);
+        } else if (m.length() != this.width() || m.width() != this.length()) {
             throw new IllegalArgumentException("Matrix length/width mismatch");
         }
 
         double[][] dotP = new double[m.length()][m.length()];
         double tmp;
 
-        for (int l = 0; l < this.length(); ++l) {
+        for (int l = 0; l < m.length(); ++l) {
             for (int l2 = 0; l2 < m.length(); ++l2) {
                 tmp = 0;
                 for (int w = 0; w < this.width(); ++w) {
@@ -155,6 +159,49 @@ public class Matrix extends Matrices {
                 }
                 dotP[l][l2] = tmp;
             }
+        }
+        return new Matrix(dotP);
+    }
+
+    public Matrix dotVectorProduct(Matrices m) {
+        if (!m.isColumnVector() && !m.isRowVector()) {
+            throw new IllegalArgumentException("dotVectorProduct called on non vector");
+        }
+        if (m.isColumnVector()) {
+            return colVecDotPro(m);
+        } else {
+            return rowVecDotPro(m);
+        }
+    }
+
+    private Matrix colVecDotPro(Matrices m) {
+        if (m.length() != this.width()) {
+            throw new IllegalArgumentException("Vector length/width mismatch");
+        }
+        double[][] dotP = new double[m.length()][1];
+        double tmp;
+        for (int l = 0; l < this.length; ++l) {
+            tmp = 0;
+            for (int w = 0; w < this.width; ++w) {
+                tmp += v(l, w);
+            }
+            dotP[l][1] = tmp;
+        }
+        return new Matrix(dotP);
+    }
+
+    private Matrix rowVecDotPro(Matrices m) {
+        if (m.width() != this.length()) {
+            throw new IllegalArgumentException("Vector length/width mismatch");
+        }
+        double[][] dotP = new double[1][m.width()];
+        double tmp;
+        for (int w = 0; w < this.width; ++w) {
+            tmp = 0;
+            for (int l = 0; l < this.length; ++l) {
+                tmp += v(l, w);
+            }
+            dotP[1][w] = tmp;
         }
         return new Matrix(dotP);
     }
@@ -265,8 +312,34 @@ public class Matrix extends Matrices {
         }
     }
 
-    private static void excpt() {
-        throw new IllegalArgumentException("Matrix length/width mismatch");
+    public void print() {
+        String border = "     ";
+        String p;
+        for (int l = 0; l < length; ++l) {
+            for (int w = 0; w < width; ++w) {
+                p = (theMatrix[l][w] + border);
+                System.out.print(p.substring(0, 5) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public void print(int spacing, int trunc) {
+        String border = "";
+
+        int append = 0; 
+        while (append++ < spacing) {
+            border += " ";
+        }
+
+        String p;
+        for (int l = 0; l < length; ++l) {
+            for (int w = 0; w < width; ++w) {
+                p = (theMatrix[l][w] + border);
+                System.out.print(p.substring(0, Math.min(trunc, p.length())) + " ");
+            }
+            System.out.println();
+        }
     }
 
 }

@@ -49,7 +49,7 @@ public abstract class Matrices {
 
     public abstract Matrix Transpose();
 
-    public Matrices T() {
+    public Matrix T() {
         return Transpose();
     }
 
@@ -58,11 +58,43 @@ public abstract class Matrices {
     public abstract double sum();
 
     public abstract Matrix vectorSum();
+
     public abstract Matrix vectorSumRow();
-    
+
     public abstract void set(int l, int w, double value);
 
     public static void main(String[] args) {
+        Matrix x = new Matrix(4, 2);
+        x.set(0, 0, 1);
+        x.set(0, 1, 2);
+        x.set(1, 0, 3);
+        x.set(1, 1, 4);
+        x.set(2, 0, 5);
+        x.set(2, 1, 6);
+        x.set(3, 0, 7);
+        x.set(3, 1, 8);
+        System.out.println("printing matrix x");
+        x.print();
+
+        Matrix y = new Matrix(2, 4);
+        y.set(1, 0, 6);
+        y.set(1, 1, 5);
+        y.set(0, 2, 4);
+        y.set(0, 3, 3);
+        y.set(1, 0, 2);
+        y.set(1, 3, 1);
+        y.set(0, 2, 0);
+        y.set(0, 1, -1);
+        System.out.println("matrix y");
+        y.print();
+
+        Matrix xy = (Matrix) x.dotProduct(y);
+        System.out.println("xy (dot product)");
+        xy.print();
+
+        System.out.println("matrix y(T)");
+        y.T().print();
+
     }
 
 }
