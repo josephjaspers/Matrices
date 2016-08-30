@@ -159,17 +159,6 @@ public class Matrix extends Matrices {
         return new Matrix(dotP);
     }
 
-    public Matrix dotVectorProduct(Matrices m) {
-        if (!m.isColumnVector() && !m.isRowVector()) {
-            throw new IllegalArgumentException("dotVectorProduct called on non vector");
-        }
-        if (m.isColumnVector()) {
-            return colVecDotPro(m);
-        } else {
-            return rowVecDotPro(m);
-        }
-    }
-
     @Override
     public double v(int l, int w) {
         return theMatrix[l][w];
