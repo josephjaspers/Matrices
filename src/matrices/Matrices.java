@@ -89,9 +89,14 @@ public abstract class Matrices {
         y.print();
 
         Matrix xy = (Matrix) x.dotProduct(y);
+
         System.out.println("xy (dot product)");
         xy.print();
+        System.out.println("(xy / 4)^2");
+        System.out.println();
 
+        System.out.println();
+        
         System.out.println("matrix y(T)");
         y.T().print();
 
