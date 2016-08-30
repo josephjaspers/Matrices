@@ -19,33 +19,48 @@ public abstract class Matrices {
 
     public abstract void divideEqual(Matrices m);
 
-    public abstract Matrices add(Matrices m);
+    public abstract Matrix add(Matrices m);
 
-    public abstract Matrices subtract(Matrices m);
+    public abstract Matrix subtract(Matrices m);
 
-    public abstract Matrices divide(Matrices m);
+    public abstract Matrix divide(Matrices m);
 
-    public abstract Matrices multiply(Matrices m);
+    public abstract Matrix multiply(Matrices m);
+
+    public abstract Matrix dotProduct(Matrices m);
 
     public abstract double v(int x, int y);
 
-    public abstract int getColLength();
+    public abstract boolean isColumnVector();
 
-    public abstract int getNumbRows();
+    public abstract boolean isRowVector();
 
     public abstract int length();
 
+    public int numbRows() {
+        return length();
+    }
+
     public abstract int width();
 
-    public abstract Matrices Transpose();
+    public int numbColumns() {
+        return width();
+    }
 
-    public abstract Matrices T();
+    public abstract Matrix Transpose();
+
+    public Matrices T() {
+        return Transpose();
+    }
 
     public abstract void scale(double number, char oper);
 
     public abstract double sum();
 
-    public abstract Vector vectorSum();
+    public abstract Matrix vectorSum();
+    public abstract Matrix vectorSumRow();
+    
+    public abstract void set(int l, int w, double value);
 
     public static void main(String[] args) {
     }

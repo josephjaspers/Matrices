@@ -1,128 +1,182 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package matrices;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 
-/**
- *
- * @author Joseph
- */
 public class Matrix extends Matrices {
 
-    ArrayList<Vector> theMatrix = new ArrayList<>();
-    final boolean updateable;
-    private int width;
+    final double[][] theMatrix;
+    final int length;
+    final int width;
+
+    public Matrix(double[][] mat) {
+        theMatrix = mat;
+        length = mat.length;
+        width = mat[0].length;
+    }
 
     public Matrix(int length, int width) {
-        for (int l = 0; l < length; ++l) {
-            theMatrix.add(new Vector(new double[width]));
-        }
+        theMatrix = new double[length][width];
+
+        this.length = length;
         this.width = width;
-        updateable = false;
     }
 
-    public Matrix(double[][] doubleary) {
-        for (int i = 0; i < doubleary.length; ++i) {
-            theMatrix.add(new Vector(doubleary[i]));
-        }
-        this.width = doubleary[0].length;
-        updateable = false;
-    }
+    public Matrix(int length, int width, double fill) {
+        theMatrix = new double[length][width];
+        Arrays.fill(theMatrix, fill);
 
-    public Matrix(int l, int w, boolean updateable) {
-        for (int i = 0; i < l; ++i) {
-            theMatrix.add(new Vector(new double[w]));
-        }
-        this.updateable = updateable;
-    }
-
-    public Matrix(double[][] doubleAry, boolean updateable) {
-        for (int i = 0; i < doubleAry.length; ++i) {
-            theMatrix.add(new Vector(doubleAry[i]));
-        }
-        this.updateable = updateable;
-        this.width = doubleAry[0].length;
-    }
-
-    public boolean addRow(double[] row) {
-        if (row.length != this.width()) {
-            throw new IllegalArgumentException("length must match width when adding row");
-        }
-        if (!updateable) {
-            throw new IllegalArgumentException("Not updateable // initialize this matrix as updateable");
-            //return false;
-        }
-        theMatrix.add(new Vector(row));
-        return true;
-    }
-
-    public boolean isUpdateable() {
-        return updateable;
+        this.length = length;
+        this.width = width;
     }
 
     @Override
     public void addEqual(Matrices m) {
-        operandEqualLesser(m, '+');
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        for (int l = 0; l < m.length(); ++l) {
+            for (int w = 0; w < m.length(); ++w) {
+                this.set(l, w, this.v(l, w) + m.v(l, w));
+            }
+        }
     }
 
     @Override
     public void subtractEqual(Matrices m) {
-        operandEqualLesser(m, '-');
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+        for (int l = 0; l < m.length(); ++l) {
+            for (int w = 0; w < m.length(); ++w) {
+                this.set(l, w, this.v(l, w) - m.v(l, w));
+            }
+        }
     }
 
     @Override
     public void timesEqual(Matrices m) {
-        operandEqualGreater(m, '*');
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+        for (int l = 0; l < m.length(); ++l) {
+            for (int w = 0; w < m.length(); ++w) {
+                this.set(l, w, this.v(l, w) * m.v(l, w));
+            }
+        }
     }
 
     @Override
     public void divideEqual(Matrices m) {
-        operandEqualGreater(m, '/');
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+        for (int l = 0; l < m.length(); ++l) {
+            for (int w = 0; w < m.length(); ++w) {
+                this.set(l, w, this.v(l, w) / m.v(l, w));
+            }
+        }
     }
 
     @Override
-    public Matrices add(Matrices m) {
-        return operandLesser(m, '+');
+    public Matrix add(Matrices m) {
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        double[][] newMatrix = new double[this.length()][this.width()];
+        for (int l = 0; l < this.length(); ++l) {
+            for (int w = 0; w < this.length(); ++w) {
+                newMatrix[l][w] = this.v(l, w) + m.v(l, w);
+            }
+        }
+        return new Matrix(newMatrix);
     }
 
     @Override
-    public Matrices subtract(Matrices m) {
-        return operandLesser(m, '-');
+    public Matrix subtract(Matrices m) {
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        double[][] newMatrix = new double[this.length()][this.width()];
+        for (int l = 0; l < this.length(); ++l) {
+            for (int w = 0; w < this.length(); ++w) {
+                newMatrix[l][w] = this.v(l, w) - m.v(l, w);
+            }
+        }
+        return new Matrix(newMatrix);
     }
 
     @Override
-    public Matrices divide(Matrices m) {
-        return operandGreater(m, '/');
+    public Matrix divide(Matrices m) {
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        double[][] newMatrix = new double[this.length()][this.width()];
+        for (int l = 0; l < this.length(); ++l) {
+            for (int w = 0; w < this.length(); ++w) {
+                newMatrix[l][w] = this.v(l, w) / m.v(l, w);
+            }
+        }
+        return new Matrix(newMatrix);
     }
 
     @Override
-    public Matrices multiply(Matrices m) {
-        return operandGreater(m, '*');
+    public Matrix multiply(Matrices m) {
+        if (m.length() != this.length() || m.width() != this.width()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        double[][] newMatrix = new double[this.length()][this.width()];
+        for (int l = 0; l < this.length(); ++l) {
+            for (int w = 0; w < this.length(); ++w) {
+                newMatrix[l][w] = this.v(l, w) * m.v(l, w);
+            }
+        }
+        return new Matrix(newMatrix);
     }
 
     @Override
-    public double v(int x, int y) {
-        return theMatrix.get(x).get(y);
+    public Matrix dotProduct(Matrices m) {
+        if (m.length() != this.width() || m.width() != this.length()) {
+            throw new IllegalArgumentException("Matrix length/width mismatch");
+        }
+
+        double[][] dotP = new double[m.length()][m.length()];
+        double tmp;
+
+        for (int l = 0; l < this.length(); ++l) {
+            for (int l2 = 0; l2 < m.length(); ++l2) {
+                tmp = 0;
+                for (int w = 0; w < this.width(); ++w) {
+                    tmp += this.v(l, w) * m.v(w, l2);
+                }
+                dotP[l][l2] = tmp;
+            }
+        }
+        return new Matrix(dotP);
     }
 
     @Override
-    public int getColLength() {
-        return theMatrix.size();
+    public double v(int l, int w) {
+        return theMatrix[l][w];
     }
 
     @Override
-    public int getNumbRows() {
-        return width();
+    public boolean isColumnVector() {
+        return this.width() == 1;
+    }
 
+    @Override
+    public boolean isRowVector() {
+        return this.length() == 1;
     }
 
     @Override
     public int length() {
-        return theMatrix.size();
+        return length;
     }
 
     @Override
@@ -131,142 +185,21 @@ public class Matrix extends Matrices {
     }
 
     @Override
-    public Matrices Transpose() {
-        double[][] matr = new double[this.length()][this.width()];
-        double tmp[];
-        for (int w = 0; w < this.width(); ++w) {
-            tmp = new double[this.length()];
-            for (int l = 0; l < this.length(); ++l) {
-                tmp[l] = this.v(l, w);
-            }
-            matr[w] = tmp;
-        }
-        return new Matrix(matr);
-    }
-
-    @Override
-    public Matrices T() {
-        return Transpose();
-    }
-
-    private Matrices operandLesser(Matrices m, char oper) {
-        if (m instanceof Vector) {
-            if (m.length() != this.width()) {
-                throw new IllegalArgumentException("vector length must be equal to matrix width");
-            }
-            double[][] newMatrix = new double[this.length()][this.width()];
-            Vector vec = (Vector) m;
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    newMatrix[l][w] = calculate(this.v(l, w), oper, vec.get(w));
-                }
-            }
-            return new Matrix(newMatrix);
-        } else if (m.length() != this.length() || m.width() != this.width()) {
-            throw new IllegalArgumentException("matrices length/width mismatch");
-        } else {
-            double[][] newM = new double[this.length()][this.width()];
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    newM[l][w] = calculate(this.v(l, w), oper, m.v(l, w));
-                }
-            }
-            return new Matrix(newM);
-        }
-    }
-
-    private Matrices operandGreater(Matrices m, char oper) {
-        if (m instanceof Vector) {
-            if (m.length() != this.width()) {
-                throw new IllegalArgumentException("vector length must be equal to matrix width");
-            }
-            double[][] newMatrix = new double[this.length()][this.width()];
-            Vector vec = (Vector) m;
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    newMatrix[l][w] = calculate(this.v(l, w), oper, vec.get(w));
-                }
-            }
-            return new Matrix(newMatrix);
-        } else if (m.length() != this.width() || m.width() != this.length()) {
-            throw new IllegalArgumentException("matrices length/width mismatch");
-        } else {
-            double[][] newM = new double[this.length()][this.width()];
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    newM[l][w] = calculate(this.v(l, w), oper, m.v(w, l));
-                }
-            }
-            return new Matrix(newM);
-        }
-    }
-
-    private void operandEqualGreater(Matrices m, char oper) {
-        if (m instanceof Vector) {
-            if (m.length() != this.width()) {
-                throw new IllegalArgumentException("vector length must be equal");
-            }
-            Vector vec = (Vector) m;
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    theMatrix.get(l).set(w, calculate(this.v(l, w), oper, vec.get(w)));
-                }
-            }
-        } else if (m.width() != this.width() || m.length() != this.width()) {
-            throw new IllegalArgumentException("matrices length/width mismatch");
-        } else {
-            for (int l = 0; l < m.length(); ++l) {
-                for (int w = 0; w < m.width(); ++l) {
-                    theMatrix.get(l).set(w, calculate(this.v(l, w), oper, m.v(w, l)));
-                }
+    public Matrix Transpose() {
+        double[][] t = new double[width][length];
+        for (int l = 0; l < length; ++l) {
+            for (int w = 0; w < width; ++w) {
+                t[w][l] = theMatrix[l][w];
             }
         }
-    }
-
-    private void operandEqualLesser(Matrices m, char oper) {
-        if (m instanceof Vector) {
-            if (m.length() != this.width()) {
-                throw new IllegalArgumentException("vector length must be equal");
-            }
-            Vector vec = (Vector) m;
-            for (int l = 0; l < this.length(); ++l) {
-                for (int w = 0; w < this.width(); ++w) {
-                    theMatrix.get(l).set(w, calculate(this.v(l, w), oper, vec.get(w)));
-                }
-            }
-        } else if (m.width() != this.width() || m.length() != this.length()) {
-            throw new IllegalArgumentException("matrices length/width mismatch");
-        } else {
-            for (int l = 0; l < m.length(); ++l) {
-                for (int w = 0; w < m.width(); ++l) {
-                    theMatrix.get(l).set(w, calculate(this.v(l, w), oper, m.v(l, w)));
-                }
-            }
-        }
-    }
-
-    private static double calculate(double n1, char oper, double n2) {
-        switch (oper) {
-            case '*':
-                return n1 * n2;
-            case '^':
-                return Math.pow(n1, n2);
-            case '/':
-                return n1 / n2;
-            case '+':
-                return n1 + n2;
-            case '-':
-                return n1 - n2;
-            default:
-                throw new IllegalArgumentException("non valid operand, acceptable operands are: *, ^, /, + , -");
-        }
+        return new Matrix(t);
     }
 
     @Override
     public void scale(double number, char oper) {
-        for (int l = 0; l < length(); ++l) {
-            for (int w = 0; w < width(); ++w) {
-                theMatrix.get(l).set(w, calculate(theMatrix.get(l).get(w), oper, number));
+        for (int l = 0; l < length; ++l) {
+            for (int w = 0; w < width; ++w) {
+                theMatrix[l][w] = calculate(theMatrix[l][w], oper, number);
             }
         }
     }
@@ -274,38 +207,66 @@ public class Matrix extends Matrices {
     @Override
     public double sum() {
         double total = 0;
-        for (int l = 0; l < length(); ++l) {
-            for (int w = 0; w < width(); ++w) {
-                total += this.v(l, w);
+        for (int l = 0; l < length; ++l) {
+            for (int w = 0; w < width; ++w) {
+                total += theMatrix[l][w];
             }
         }
         return total;
     }
 
-    public void set(int x, int y, double val) {
-        theMatrix.get(x).set(y, val);
+    @Override
+    public Matrix vectorSum() {
+        double[][] vect = new double[this.length][1];
+        double total = 0;
+        for (int l = 0; l < length; ++l) {
+            total = 0;
+            for (int w = 0; w < width; ++w) {
+                total += theMatrix[l][w];
+            }
+            vect[l][0] = total;
+        }
+        return new Matrix(vect);
     }
 
-    public Vector vectorSum() {
-        //return a vector that is the sum of all its widths
-        double tmp;
-        double[] newVec = new double[theMatrix.size()];
-        for (int i = 0; i < theMatrix.size(); ++i) {
-            tmp = 0;
-            for (int j = 0; j < theMatrix.get(i).length(); ++j) {
-                tmp += theMatrix.get(i).get(j);
+    @Override
+    public Matrix vectorSumRow() {
+        double[][] vect = new double[1][this.width];
+        double total = 0;
+        for (int w = 0; w < width; ++w) {
+            total = 0;
+            for (int l = 0; l < length; ++l) {
+                total += theMatrix[l][w];
             }
-            newVec[i] = tmp;
+            vect[1][w] = total;
         }
-        return new Vector(newVec);
+        return new Matrix(vect);
     }
 
-    public void print() {
-        for (int i = 0; i < length(); ++i) {
-            for (int j = 0; j < width(); ++j) {
-                System.out.print(theMatrix.get(i).get(j) + " ");
-            }
-            System.out.println();
+    @Override
+    public void set(int l, int w, double value) {
+        theMatrix[l][w] = value;
+    }
+
+    private static double calculate(double n1, char op, double n2) {
+        switch (op) {
+            case '^':
+                return Math.pow(n1, n2);
+            case '*':
+                return n1 * n2;
+            case '/':
+                return n1 / n2;
+            case '+':
+                return n1 + n2;
+            case '-':
+                return n1 - n2;
+            default:
+                throw new IllegalArgumentException("invalid operator - valid operaters are ^, *, /, +, -");
         }
     }
+
+    private static void excpt() {
+        throw new IllegalArgumentException("Matrix length/width mismatch");
+    }
+
 }
