@@ -215,6 +215,22 @@ public class Matrix extends Matrices {
         return total;
     }
 
+    public Matrix getColumnVector(int index) {
+        double[][] vect = new double[length][1];
+        for (int i = 0; i < length; ++i) {
+            vect[i][0] = theMatrix[i][index];
+        }
+        return new Matrix(vect);
+    }
+
+    public Matrix getRowVector(int index) {
+        double[][] vect = new double[1][width];
+        for (int i = 0; i < width; ++i) {
+            vect[i][0] = theMatrix[index][i];
+        }
+        return new Matrix(vect);
+    }
+
     @Override
     public Matrix vectorSum() {
         double[][] vect = new double[this.length][1];
