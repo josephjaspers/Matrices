@@ -57,9 +57,9 @@ public abstract class Matrices {
 
     public abstract double sum();
 
-    public abstract Matrices vectorSum();
+    public abstract Vector vectorSum();
 
-    public abstract Matrices vectorSumRow();
+    public abstract Vector vectorSumRow();
 
     public abstract void set(int l, int w, double value);
 
@@ -79,6 +79,8 @@ public abstract class Matrices {
                 throw new IllegalArgumentException("invalid operator - valid operaters are ^, *, /, +, -");
         }
     }
+
+    public abstract void print();
 
     public static void main(String[] args) {
         Matrix x = new Matrix(4, 2);
@@ -117,6 +119,16 @@ public abstract class Matrices {
         System.out.println("matrix y(T)");
         Matrix yT = (Matrix) y.T();
         yT.print();
+
+        Vector v = new Vector(new double[]{1, 2, 3, 4});
+        System.out.println("printing v");
+        v.print();
+        System.out.println("printint y * v");
+        y.dotProduct(v).print();
+        System.out.println("v lw " + v.length() + " " + v.width());
+        System.out.println("y lw " + y.length() + " " + y.width());
+        System.out.println("VY");
+        v.T().dotProduct(y.T()).print();
 
     }
 

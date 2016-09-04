@@ -144,7 +144,7 @@ public class Matrix extends Matrices {
             throw new IllegalArgumentException("Matrix length/width mismatch");
         }
 
-        double[][] dotP = new double[m.width()][m.width()];
+        double[][] dotP = new double[this.length][m.width()];
         double tmp;
 
         for (int l = 0; l < this.length; ++l) {
@@ -264,6 +264,7 @@ public class Matrix extends Matrices {
         theMatrix[l][w] = value;
     }
 
+    @Override
     public void print() {
         String border = "     ";
         String p;

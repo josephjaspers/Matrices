@@ -160,7 +160,7 @@ public class Vector extends Matrices {
 
     @Override
     public int width() {
-        return 0;
+        return 1;
     }
 
     @Override
@@ -210,6 +210,13 @@ public class Vector extends Matrices {
     private void chkDim(Matrices m) {
         if (this.length != m.length() || this.width != m.width()) {
             throw new IllegalArgumentException("width / length mismatch");
+        }
+    }
+
+    @Override
+    public void print() {
+        for (int i = 0; i < length; ++i) {
+            System.out.println(vect[i]);
         }
     }
 
