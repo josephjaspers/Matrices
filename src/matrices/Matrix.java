@@ -232,53 +232,36 @@ public class Matrix extends Matrices {
     }
 
     @Override
-    public Matrix vectorSum() {
-        double[][] vect = new double[this.length][1];
+    public Vector vectorSum() {
+        double[] vect = new double[this.length];
         double total = 0;
         for (int l = 0; l < length; ++l) {
             total = 0;
             for (int w = 0; w < width; ++w) {
                 total += theMatrix[l][w];
             }
-            vect[l][0] = total;
+            vect[l] = total;
         }
-        return new Matrix(vect);
+        return new Vector(vect);
     }
 
     @Override
-    public Matrix vectorSumRow() {
-        double[][] vect = new double[1][this.width];
+    public Vector vectorSumRow() {
+        double[] vect = new double[this.width];
         double total = 0;
         for (int w = 0; w < width; ++w) {
             total = 0;
             for (int l = 0; l < length; ++l) {
                 total += theMatrix[l][w];
             }
-            vect[1][w] = total;
+            vect[w] = total;
         }
-        return new Matrix(vect);
+        return new Vector(vect);
     }
 
     @Override
     public void set(int l, int w, double value) {
         theMatrix[l][w] = value;
-    }
-
-    private static double calculate(double n1, char op, double n2) {
-        switch (op) {
-            case '^':
-                return Math.pow(n1, n2);
-            case '*':
-                return n1 * n2;
-            case '/':
-                return n1 / n2;
-            case '+':
-                return n1 + n2;
-            case '-':
-                return n1 - n2;
-            default:
-                throw new IllegalArgumentException("invalid operator - valid operaters are ^, *, /, +, -");
-        }
     }
 
     public void print() {

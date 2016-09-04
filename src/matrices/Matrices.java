@@ -19,15 +19,15 @@ public abstract class Matrices {
 
     public abstract void divideEqual(Matrices m);
 
-    public abstract Matrix add(Matrices m);
+    public abstract Matrices add(Matrices m);
 
-    public abstract Matrix subtract(Matrices m);
+    public abstract Matrices subtract(Matrices m);
 
-    public abstract Matrix divide(Matrices m);
+    public abstract Matrices divide(Matrices m);
 
-    public abstract Matrix multiply(Matrices m);
+    public abstract Matrices multiply(Matrices m);
 
-    public abstract Matrix dotProduct(Matrices m);
+    public abstract Matrices dotProduct(Matrices m);
 
     public abstract double v(int x, int y);
 
@@ -47,9 +47,9 @@ public abstract class Matrices {
         return width();
     }
 
-    public abstract Matrix Transpose();
+    public abstract Matrices Transpose();
 
-    public Matrix T() {
+    public Matrices T() {
         return Transpose();
     }
 
@@ -57,11 +57,28 @@ public abstract class Matrices {
 
     public abstract double sum();
 
-    public abstract Matrix vectorSum();
+    public abstract Matrices vectorSum();
 
-    public abstract Matrix vectorSumRow();
+    public abstract Matrices vectorSumRow();
 
     public abstract void set(int l, int w, double value);
+
+    public static double calculate(double n1, char op, double n2) {
+        switch (op) {
+            case '^':
+                return Math.pow(n1, n2);
+            case '*':
+                return n1 * n2;
+            case '/':
+                return n1 / n2;
+            case '+':
+                return n1 + n2;
+            case '-':
+                return n1 - n2;
+            default:
+                throw new IllegalArgumentException("invalid operator - valid operaters are ^, *, /, +, -");
+        }
+    }
 
     public static void main(String[] args) {
         Matrix x = new Matrix(4, 2);
@@ -96,9 +113,10 @@ public abstract class Matrices {
         System.out.println();
 
         System.out.println();
-        
+
         System.out.println("matrix y(T)");
-        y.T().print();
+        Matrix yT = (Matrix) y.T();
+        yT.print();
 
     }
 
